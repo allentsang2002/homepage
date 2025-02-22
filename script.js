@@ -1,0 +1,40 @@
+function scrollToSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    const headerOffset = 80;
+    const elementPosition = section.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+    window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+    });
+    
+    document.querySelectorAll('.header a').forEach(a => {
+        a.classList.remove('active');
+        if (a.getAttribute('href') === '#' + sectionId) {
+            a.classList.add('active');
+        }
+    });
+}
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+        }
+    });
+}, {
+    threshold: 0.1
+});
+
+document.querySelectorAll('section').forEach(section => {
+    observer.observe(section);
+});
+
+document.querySelectorAll('.header a').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const sectionId = this.getAttribute('href').substring(1);
+        scrollToSection(sectionId);
+    });
+});
